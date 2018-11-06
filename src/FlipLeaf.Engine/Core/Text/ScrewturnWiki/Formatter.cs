@@ -8,7 +8,7 @@ namespace FlipLeaf.Core.Text.ScrewturnWiki
     /// <summary>
     /// Performs all the text formatting and parsing operations.
     /// </summary>
-    public static class Formatter
+    internal static class Formatter
     {
 
         private static readonly Regex NoWikiRegex = new Regex(@"\<nowiki\>(.|\n|\r)+?\<\/nowiki\>", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
@@ -350,68 +350,71 @@ namespace FlipLeaf.Core.Text.ScrewturnWiki
                         {
                             switch (match.Value.Substring(1, match.Value.Length - 2).ToUpperInvariant())
                             {
-                                case "WIKITITLE":
-                                    sb.Insert(match.Index, Settings.WikiTitle);
-                                    break;
-                                case "WIKIVERSION":
-                                    sb.Insert(match.Index, Settings.WikiVersion);
-                                    break;
-                                case "MAINURL":
-                                    sb.Insert(match.Index, Settings.MainUrl);
-                                    break;
-                                case "RSSPAGE":
-                                    if (current != null)
-                                    {
-                                        sb.Insert(match.Index, @"<a href=""" +
-                                            UrlTools.BuildUrl("RSS.aspx?Page=", Tools.UrlEncode(current.FullName)) +
-                                            @""" title=""" + Exchanger.ResourceExchanger.GetResource("RssForThisPage") + @"""><img src=""" +
-                                            Settings.GetThemePath(Tools.DetectCurrentNamespace()) + @"Images/RSS.png"" alt=""RSS"" /></a>");
-                                    }
-                                    break;
-                                case "THEMEPATH":
-                                    sb.Insert(match.Index, Settings.GetThemePath(Tools.DetectCurrentNamespace()));
-                                    break;
-                                case "CLEAR":
-                                    sb.Insert(match.Index, @"<div style=""clear: both;""></div>");
-                                    break;
-                                case "TOP":
-                                    sb.Insert(match.Index, @"<a href=""#PageTop"">" + Exchanger.ResourceExchanger.GetResource("Top") + "</a>");
-                                    break;
-                                case "SEARCHBOX":
-                                    string textBoxId = "SB" + Guid.NewGuid().ToString("N");
+                                //case "WIKITITLE":
+                                //    sb.Insert(match.Index, Settings.WikiTitle);
+                                //    break;
+                                //case "WIKIVERSION":
+                                //    sb.Insert(match.Index, Settings.WikiVersion);
+                                //    break;
+                                //case "MAINURL":
+                                //    sb.Insert(match.Index, Settings.MainUrl);
+                                //    break;
+                                //case "RSSPAGE":
+                                //    if (current != null)
+                                //    {
+                                //        sb.Insert(match.Index, @"<a href=""" +
+                                //            UrlTools.BuildUrl("RSS.aspx?Page=", Tools.UrlEncode(current.FullName)) +
+                                //            @""" title=""" + Exchanger.ResourceExchanger.GetResource("RssForThisPage") + @"""><img src=""" +
+                                //            Settings.GetThemePath(Tools.DetectCurrentNamespace()) + @"Images/RSS.png"" alt=""RSS"" /></a>");
+                                //    }
+                                //    break;
+                                //case "THEMEPATH":
+                                //    sb.Insert(match.Index, Settings.GetThemePath(Tools.DetectCurrentNamespace()));
+                                //    break;
+                                //case "CLEAR":
+                                //    sb.Insert(match.Index, @"<div style=""clear: both;""></div>");
+                                //    break;
+                                //case "TOP":
+                                //    sb.Insert(match.Index, @"<a href=""#PageTop"">" + Exchanger.ResourceExchanger.GetResource("Top") + "</a>");
+                                //    break;
+                                //case "SEARCHBOX":
+                                //    string textBoxId = "SB" + Guid.NewGuid().ToString("N");
 
-                                    string nsstring = ns != null ? NameTools.GetFullName(ns.Name, "Search") + ".aspx" : "Search.aspx";
-                                    string doSearchFunction = "<nowiki><nobr><script type=\"text/javascript\"><!--\r\n" + @"function _DoSearch_" + textBoxId + "() { document.location = '" + nsstring + @"?AllNamespaces=1&FilesAndAttachments=0&Mode=3&Query=' + encodeURI(document.getElementById('" + textBoxId + "').value); }" + "\r\n// -->\r\n</script>";
-                                    sb.Insert(match.Index, doSearchFunction +
-                                        @"<input class=""txtsearchbox"" type=""text"" id=""" + textBoxId + @""" onkeydown=""javascript:var keycode; if(window.event) keycode = event.keyCode; else keycode = event.which; if(keycode == 10 || keycode == 13) { _DoSearch_" + textBoxId + @"(); return false; }"" /> <big><a href=""#"" onclick=""javascript:_DoSearch_" + textBoxId + @"(); return false;"">&raquo;</a></big></nowiki></nobr>");
-                                    break;
-                                case "CATEGORIES":
-                                    List<CategoryInfo> cats = Pages.GetCategories(ns);
-                                    string pageName = ns != null ? NameTools.GetFullName(ns.Name, "AllPages") + ".aspx" : "AllPages.aspx";
-                                    pageName += "?Cat=";
-                                    string categories = "<ul><li>" + string.Join("</li><li>",
-                                        (from c in cats
-                                         select "<a href=\"" + pageName + Tools.UrlEncode(c.FullName) + "\">" + NameTools.GetLocalName(c.FullName) + "</a>").ToArray()) + "</li></ul>";
-                                    sb.Insert(match.Index, categories);
-                                    break;
-                                case "CLOUD":
-                                    string cloud = BuildCloud(DetectNamespaceInfo(current));
-                                    sb.Insert(match.Index, cloud);
-                                    break;
-                                case "PAGECOUNT":
-                                    sb.Insert(match.Index, Pages.GetPages(DetectNamespaceInfo(current)).Count.ToString());
-                                    break;
-                                case "PAGECOUNT(*)":
-                                    sb.Insert(match.Index, Pages.GetGlobalPageCount().ToString());
-                                    break;
-                                case "ORPHANS":
-                                    sb.Insert(match.Index, BuildOrphanedPagesList(DetectNamespaceInfo(current), context, current));
-                                    break;
-                                case "WANTED":
-                                    sb.Insert(match.Index, BuildWantedPagesList(DetectNamespaceInfo(current)));
-                                    break;
-                                case "NAMESPACELIST":
-                                    sb.Insert(match.Index, BuildNamespaceList());
+                                //    string nsstring = ns != null ? NameTools.GetFullName(ns.Name, "Search") + ".aspx" : "Search.aspx";
+                                //    string doSearchFunction = "<nowiki><nobr><script type=\"text/javascript\"><!--\r\n" + @"function _DoSearch_" + textBoxId + "() { document.location = '" + nsstring + @"?AllNamespaces=1&FilesAndAttachments=0&Mode=3&Query=' + encodeURI(document.getElementById('" + textBoxId + "').value); }" + "\r\n// -->\r\n</script>";
+                                //    sb.Insert(match.Index, doSearchFunction +
+                                //        @"<input class=""txtsearchbox"" type=""text"" id=""" + textBoxId + @""" onkeydown=""javascript:var keycode; if(window.event) keycode = event.keyCode; else keycode = event.which; if(keycode == 10 || keycode == 13) { _DoSearch_" + textBoxId + @"(); return false; }"" /> <big><a href=""#"" onclick=""javascript:_DoSearch_" + textBoxId + @"(); return false;"">&raquo;</a></big></nowiki></nobr>");
+                                //    break;
+                                //case "CATEGORIES":
+                                //    List<CategoryInfo> cats = Pages.GetCategories(ns);
+                                //    string pageName = ns != null ? NameTools.GetFullName(ns.Name, "AllPages") + ".aspx" : "AllPages.aspx";
+                                //    pageName += "?Cat=";
+                                //    string categories = "<ul><li>" + string.Join("</li><li>",
+                                //        (from c in cats
+                                //         select "<a href=\"" + pageName + Tools.UrlEncode(c.FullName) + "\">" + NameTools.GetLocalName(c.FullName) + "</a>").ToArray()) + "</li></ul>";
+                                //    sb.Insert(match.Index, categories);
+                                //    break;
+                                //case "CLOUD":
+                                //    string cloud = BuildCloud(DetectNamespaceInfo(current));
+                                //    sb.Insert(match.Index, cloud);
+                                //    break;
+                                //case "PAGECOUNT":
+                                //    sb.Insert(match.Index, Pages.GetPages(DetectNamespaceInfo(current)).Count.ToString());
+                                //    break;
+                                //case "PAGECOUNT(*)":
+                                //    sb.Insert(match.Index, Pages.GetGlobalPageCount().ToString());
+                                //    break;
+                                //case "ORPHANS":
+                                //    sb.Insert(match.Index, BuildOrphanedPagesList(DetectNamespaceInfo(current), context, current));
+                                //    break;
+                                //case "WANTED":
+                                //    sb.Insert(match.Index, BuildWantedPagesList(DetectNamespaceInfo(current)));
+                                //    break;
+                                //case "NAMESPACELIST":
+                                //    sb.Insert(match.Index, BuildNamespaceList());
+                                //    break;
+                                default:
+                                    sb.Insert(match.Index, "NOT SUPPORTED");
                                     break;
                             }
                         }
@@ -571,7 +574,7 @@ namespace FlipLeaf.Core.Text.ScrewturnWiki
                                 dummy.Append(url);
                                 dummy.Append(@""" alt=""");
                                 if (title.Length > 0) dummy.Append(StripWikiMarkup(StripHtml(title.TrimStart('#'))));
-                                else dummy.Append(Exchanger.ResourceExchanger.GetResource("Image"));
+                                else dummy.Append("Image");
                                 dummy.Append(@""" />");
                                 img.Append(BuildLink(bigUrl, dummy.ToString(), true, title, forIndexing, bareBones, context, null, tempLinkedPages));
                             }
@@ -581,7 +584,7 @@ namespace FlipLeaf.Core.Text.ScrewturnWiki
                                 img.Append(url);
                                 img.Append(@""" alt=""");
                                 if (title.Length > 0) img.Append(StripWikiMarkup(StripHtml(title.TrimStart('#'))));
-                                else img.Append(Exchanger.ResourceExchanger.GetResource("Image"));
+                                else img.Append("Image");
                                 img.Append(@""" />");
                             }
                             if (title.Length > 0 && !title.StartsWith("#"))
@@ -615,7 +618,7 @@ namespace FlipLeaf.Core.Text.ScrewturnWiki
                                 dummy.Append(url);
                                 dummy.Append(@""" alt=""");
                                 if (title.Length > 0) dummy.Append(StripWikiMarkup(StripHtml(title.TrimStart('#'))));
-                                else dummy.Append(Exchanger.ResourceExchanger.GetResource("Image"));
+                                else dummy.Append("Image");
                                 dummy.Append(@""" />");
                                 img.Append(BuildLink(bigUrl, dummy.ToString(), true, title, forIndexing, bareBones, context, null, tempLinkedPages));
                             }
@@ -625,7 +628,7 @@ namespace FlipLeaf.Core.Text.ScrewturnWiki
                                 img.Append(url);
                                 img.Append(@""" alt=""");
                                 if (title.Length > 0) img.Append(StripWikiMarkup(StripHtml(title.TrimStart('#'))));
-                                else img.Append(Exchanger.ResourceExchanger.GetResource("Image"));
+                                else img.Append("Image");
                                 img.Append(@""" />");
                             }
                             sb.Insert(match.Index, img.ToString());
@@ -649,7 +652,9 @@ namespace FlipLeaf.Core.Text.ScrewturnWiki
                     string f = tmp.Substring("attachment:".Length);
                     if (f.StartsWith("{up}")) f = f.Substring(4);
                     if (f.ToLowerInvariant().StartsWith(UpReplacement.ToLowerInvariant())) f = f.Substring(UpReplacement.Length);
-                    attachments.Add(HttpContext.Current.Server.UrlDecode(f));
+                    // TODO
+                    //attachments.Add(HttpContext.Current.Server.UrlDecode(f));
+                    attachments.Add(f);
                     // Remove all trailing \n, so that attachments have no effect on the output in any case
                     while (sb[match.Index] == '\n' && match.Index < sb.Length - 1)
                     {
@@ -1118,313 +1123,7 @@ namespace FlipLeaf.Core.Text.ScrewturnWiki
             if (Settings.EnableSectionAnchors) buffer.Append(@""">&#0182;</a>");
             else buffer.Append(@""" style=""visibility: hidden;"">&nbsp;</a>");
         }
-
-        /// <summary>
-        /// Builds the recent changes list.
-        /// </summary>
-        /// <param name="allNamespaces">A value indicating whether to build a list for all namespace or for just the current one.</param>
-        /// <param name="currentNamespace">The current namespace.</param>
-        /// <param name="context">The formatting context.</param>
-        /// <param name="currentPage">The current page, or <c>null</c>.</param>
-        /// <returns>The recent changes list HTML markup.</returns>
-        private static string BuildRecentChanges(NamespaceInfo currentNamespace, bool allNamespaces, FormattingContext context, PageInfo currentPage)
-        {
-            List<RecentChange> allChanges = new List<RecentChange>(RecentChanges.GetAllChanges());
-
-            if (allChanges.Count == 0) return "";
-
-            // Sort by descending date/time
-            allChanges.Reverse();
-
-            Func<NamespaceInfo, string> getName = (ns) =>
-            {
-                if (ns == null) return null;
-                else return ns.Name;
-            };
-
-            string currentNamespaceName = getName(currentNamespace);
-
-            // Filter by namespace
-            if (!allNamespaces)
-            {
-                allChanges.RemoveAll((c) =>
-                {
-                    NamespaceInfo ns = Pages.FindNamespace(NameTools.GetNamespace(c.Page));
-                    return getName(ns) != currentNamespaceName;
-                });
-            }
-
-            return BuildRecentChangesTable(allChanges, context, currentPage);
-        }
-
-        /// <summary>
-        /// Builds a table containing recent changes.
-        /// </summary>
-        /// <param name="allChanges">The changes.</param>
-        /// <param name="context">The formatting context.</param>
-        /// <param name="currentPage">The current page, or <c>null</c>.</param>
-        /// <returns>The table HTML.</returns>
-        public static string BuildRecentChangesTable(IList<RecentChange> allChanges, FormattingContext context, PageInfo currentPage)
-        {
-            int maxChanges = Math.Min(Settings.MaxRecentChangesToDisplay, allChanges.Count);
-
-            StringBuilder sb = new StringBuilder(500);
-            sb.Append("<table cellpadding=\"0\" cellspacing=\"0\" class=\"generictable recentchanges\"><tbody>");
-
-            for (int i = 0; i < maxChanges; i++)
-            {
-                sb.AppendFormat("<tr class=\"{0}\">", i % 2 == 0 ? "tablerow" : "tablerowalternate");
-                sb.Append("<td>");
-                sb.Append(Preferences.AlignWithTimezone(allChanges[i].DateTime).ToString(Settings.DateTimeFormat));
-                sb.Append("</td><td>");
-                sb.Append(PrintRecentChange(allChanges[i], context, currentPage));
-                sb.Append("</td>");
-                sb.Append("</tr>");
-            }
-
-            sb.Append("</tbody></table>");
-
-            return sb.ToString();
-        }
-
-        /// <summary>
-        /// Prints a recent change.
-        /// </summary>
-        /// <param name="change">The change.</param>
-        /// <param name="context">The formatting context.</param>
-        /// <param name="currentPage">The current page, or <c>null</c>.</param>
-        /// <returns>The proper text to display.</returns>
-        private static string PrintRecentChange(RecentChange change, FormattingContext context, PageInfo currentPage)
-        {
-            switch (change.Change)
-            {
-                case Change.PageUpdated:
-                    return Exchanger.ResourceExchanger.GetResource("UserUpdatedPage").Replace("##USER##", Users.UserLink(change.User)).Replace("##PAGE##", PrintPageLink(change, context, currentPage));
-                case Change.PageRenamed:
-                    return Exchanger.ResourceExchanger.GetResource("UserRenamedPage").Replace("##USER##", Users.UserLink(change.User)).Replace("##PAGE##", PrintPageLink(change, context, currentPage));
-                case Change.PageRolledBack:
-                    return Exchanger.ResourceExchanger.GetResource("UserRolledBackPage").Replace("##USER##", Users.UserLink(change.User)).Replace("##PAGE##", PrintPageLink(change, context, currentPage));
-                case Change.PageDeleted:
-                    return Exchanger.ResourceExchanger.GetResource("UserDeletedPage").Replace("##USER##", Users.UserLink(change.User)).Replace("##PAGE##", PrintPageLink(change, context, currentPage));
-                case Change.MessagePosted:
-                    return Exchanger.ResourceExchanger.GetResource("UserPostedMessage").Replace("##USER##", Users.UserLink(change.User)).Replace("##PAGE##", PrintMessageLink(change, context, currentPage));
-                case Change.MessageEdited:
-                    return Exchanger.ResourceExchanger.GetResource("UserEditedMessage").Replace("##USER##", Users.UserLink(change.User)).Replace("##PAGE##", PrintMessageLink(change, context, currentPage));
-                case Change.MessageDeleted:
-                    return Exchanger.ResourceExchanger.GetResource("UserDeletedMessage").Replace("##USER##", Users.UserLink(change.User)).Replace("##PAGE##", PrintMessageLink(change, context, currentPage));
-                default:
-                    throw new NotSupportedException();
-            }
-        }
-
-        /// <summary>
-        /// Builds a link to a page, properly handling inexistent pages.
-        /// </summary>
-        /// <param name="change">The change.</param>
-        /// <param name="context">The formatting context.</param>
-        /// <param name="currentPage">The current page, or <c>null</c>.</param>
-        /// <returns>The link HTML markup.</returns>
-        private static string PrintPageLink(RecentChange change, FormattingContext context, PageInfo currentPage)
-        {
-            PageInfo page = Pages.FindPage(change.Page);
-            if (page != null)
-            {
-                return string.Format(@"<a href=""{0}{1}"" class=""pagelink"">{2}</a>",
-                    change.Page, Settings.PageExtension, FormattingPipeline.PrepareTitle(change.Title, false, context, currentPage));
-            }
-            else
-            {
-                return FormattingPipeline.PrepareTitle(change.Title, false, context, currentPage) + " (" + change.Page + ")";
-            }
-        }
-
-        /// <summary>
-        /// Builds a link to a page discussion.
-        /// </summary>
-        /// <param name="change">The change.</param>
-        /// <param name="context">The formatting context.</param>
-        /// <param name="currentPage">The current page, or <c>null</c>.</param>
-        /// <returns>The link HTML markup.</returns>
-        private static string PrintMessageLink(RecentChange change, FormattingContext context, PageInfo currentPage)
-        {
-            PageInfo page = Pages.FindPage(change.Page);
-            if (page != null)
-            {
-                return string.Format(@"<a href=""{0}{1}?Discuss=1#{2}"" class=""pagelink"">{3}</a>",
-                    change.Page, Settings.PageExtension, Tools.GetMessageIdForAnchor(change.DateTime),
-                    FormattingPipeline.PrepareTitle(change.Title, false, context, currentPage) + " (" +
-                    FormattingPipeline.PrepareTitle(change.MessageSubject, false, context, currentPage) + ")");
-            }
-            else
-            {
-                return FormattingPipeline.PrepareTitle(change.Title, false, context, currentPage) + " (" + change.Page + ")";
-            }
-        }
-
-        /// <summary>
-        /// Builds the orhpaned pages list (valid only in non-indexing mode).
-        /// </summary>
-        /// <param name="nspace">The namespace (<c>null</c> for the root).</param>
-        /// <param name="context">The formatting context.</param>
-        /// <param name="current">The current page, if any.</param>
-        /// <returns>The list.</returns>
-        private static string BuildOrphanedPagesList(NamespaceInfo nspace, FormattingContext context, PageInfo current)
-        {
-            PageInfo[] orhpans = Pages.GetOrphanedPages(nspace);
-
-            if (orhpans.Length == 0) return "";
-
-            StringBuilder sb = new StringBuilder(500);
-            sb.Append("<ul>");
-
-            foreach (PageInfo page in orhpans)
-            {
-                PageContent content = Content.GetPageContent(page, false);
-                sb.Append("<li>");
-                sb.AppendFormat(@"<a href=""{0}{1}"" title=""{2}"" class=""pagelink"">{2}</a>", Tools.UrlEncode(page.FullName), Settings.PageExtension,
-                    FormattingPipeline.PrepareTitle(content.Title, false, context, current));
-                sb.Append("</li>");
-            }
-
-            sb.Append("</ul>");
-
-            return sb.ToString();
-        }
-
-        /// <summary>
-        /// Builds the wanted pages list.
-        /// </summary>
-        /// <param name="nspace">The namespace (<c>null</c> for the root).</param>
-        /// <returns>The list.</returns>
-        private static string BuildWantedPagesList(NamespaceInfo nspace)
-        {
-            Dictionary<string, List<string>> wanted = Pages.GetWantedPages(nspace != null ? nspace.Name : null);
-
-            if (wanted.Count == 0) return "";
-
-            StringBuilder sb = new StringBuilder(500);
-            sb.Append("<ul>");
-
-            foreach (string page in wanted.Keys)
-            {
-                sb.Append("<li>");
-                sb.AppendFormat(@"<a href=""{0}{1}"" title=""{0}"" class=""unknownlink"">{2}</a>", page, Settings.PageExtension, NameTools.GetLocalName(page));
-                sb.Append("</li>");
-            }
-
-            sb.Append("</ul>");
-
-            return sb.ToString();
-        }
-
-        /// <summary>
-        /// Builds the incoming links list for a page (valid only in Phase3).
-        /// </summary>
-        /// <param name="page">The page.</param>
-        /// <param name="context">The formatting context.</param>
-        /// <param name="current">The current page, if any.</param>
-        /// <returns>The list.</returns>
-        private static string BuildIncomingLinksList(PageInfo page, FormattingContext context, PageInfo current)
-        {
-            if (page == null) return "";
-
-            string[] links = Pages.GetPageIncomingLinks(page);
-            if (links.Length == 0) return "";
-
-            StringBuilder sb = new StringBuilder(500);
-            sb.AppendFormat("<ul>");
-
-            foreach (string link in links)
-            {
-                PageInfo linkedPage = Pages.FindPage(link);
-                if (linkedPage != null)
-                {
-                    PageContent content = Content.GetPageContent(linkedPage, false);
-
-                    sb.Append("<li>");
-                    sb.AppendFormat(@"<a href=""{0}{1}"" title=""{2}"" class=""pagelink"">{2}</a>", Tools.UrlEncode(link), Settings.PageExtension,
-                        FormattingPipeline.PrepareTitle(content.Title, false, context, current));
-                    sb.Append("</li>");
-                }
-            }
-
-            sb.AppendFormat("</ul>");
-
-            return sb.ToString();
-        }
-
-        /// <summary>
-        /// Builds the outgoing links list for a page (valid only in Phase3).
-        /// </summary>
-        /// <param name="page">The page.</param>
-        /// <param name="context">The formatting context.</param>
-        /// <param name="current">The current page, if any.</param>
-        /// <returns>The list.</returns>
-        private static string BuildOutgoingLinksList(PageInfo page, FormattingContext context, PageInfo current)
-        {
-            if (page == null) return "";
-
-            string[] links = Pages.GetPageOutgoingLinks(page);
-            if (links.Length == 0) return "";
-
-            StringBuilder sb = new StringBuilder(500);
-            sb.Append("<ul>");
-
-            foreach (string link in links)
-            {
-                PageInfo linkedPage = Pages.FindPage(link);
-                if (linkedPage != null)
-                {
-                    PageContent content = Content.GetPageContent(linkedPage, false);
-
-                    sb.Append("<li>");
-                    sb.AppendFormat(@"<a href=""{0}{1}"" title=""{2}"" class=""pagelink"">{2}</a>", Tools.UrlEncode(link), Settings.PageExtension,
-                        FormattingPipeline.PrepareTitle(content.Title, false, context, current));
-                    sb.Append("</li>");
-                }
-            }
-
-            sb.Append("</ul>");
-
-            return sb.ToString();
-        }
-
-        /// <summary>
-        /// Builds the link to a namespace.
-        /// </summary>
-        /// <param name="nspace">The namespace (<c>null</c> for the root).</param>
-        /// <returns>The link.</returns>
-        private static string BuildNamespaceLink(string nspace)
-        {
-            return "<a href=\"" + (string.IsNullOrEmpty(nspace) ? "" : Tools.UrlEncode(nspace) + ".") +
-                "Default.aspx\" class=\"pagelink\" title=\"" + (string.IsNullOrEmpty(nspace) ? "" : Tools.UrlEncode(nspace)) + "\">" +
-                (string.IsNullOrEmpty(nspace) ? "&lt;root&gt;" : nspace) + "</a>";
-        }
-
-        /// <summary>
-        /// Builds the namespace list.
-        /// </summary>
-        /// <returns>The namespace list.</returns>
-        private static string BuildNamespaceList()
-        {
-            StringBuilder sb = new StringBuilder(100);
-
-            sb.Append("<ul>");
-            sb.Append("<li>");
-            sb.Append(BuildNamespaceLink(null));
-            sb.Append("</li>");
-            foreach (NamespaceInfo ns in Pages.GetNamespaces())
-            {
-                sb.Append("<li>");
-                sb.Append(BuildNamespaceLink(ns.Name));
-                sb.Append("</li>");
-            }
-
-            sb.Append("</ul>");
-
-            return sb.ToString();
-        }
-
+        
         /// <summary>
         /// Processes line breaks.
         /// </summary>
@@ -2327,22 +2026,6 @@ namespace FlipLeaf.Core.Text.ScrewturnWiki
         }
 
         /// <summary>
-        /// Extracts the bullets from a list line.
-        /// </summary>
-        /// <param name="value">The line.</param>
-        /// <returns>The bullets.</returns>
-        private static string ExtractBullets(string value)
-        {
-            string res = "";
-            for (int i = 0; i < value.Length; i++)
-            {
-                if (value[i] == '*' || value[i] == '#') res += value[i];
-                else break;
-            }
-            return res;
-        }
-
-        /// <summary>
         /// Builds the TOC of a document.
         /// </summary>
         /// <param name="hPos">The positions of headers.</param>
@@ -2668,52 +2351,6 @@ namespace FlipLeaf.Core.Text.ScrewturnWiki
         }
 
         /// <summary>
-        /// Builds the tag cloud.
-        /// </summary>
-        /// <param name="currentNamespace">The current namespace (<c>null</c> for the root).</param>
-        /// <returns>The tag cloud.</returns>
-        private static string BuildCloud(NamespaceInfo currentNamespace)
-        {
-            StringBuilder sb = new StringBuilder();
-            // Total categorized Pages (uncategorized Pages don't count)
-            int tot = Pages.GetPages(currentNamespace).Count - Pages.GetUncategorizedPages(currentNamespace).Length;
-            List<CategoryInfo> categories = Pages.GetCategories(currentNamespace);
-            for (int i = 0; i < categories.Count; i++)
-            {
-                if (categories[i].Pages.Length > 0)
-                {
-                    //sb.Append(@"<a href=""AllPages.aspx?Cat=");
-                    //sb.Append(Tools.UrlEncode(categories[i].FullName));
-                    sb.Append(@"<a href=""");
-                    UrlTools.BuildUrl(sb, "AllPages.aspx?Cat=", Tools.UrlEncode(categories[i].FullName));
-                    sb.Append(@""" class=""CloudLink"" style=""font-size: ");
-                    sb.Append(ComputeSize((float)categories[i].Pages.Length / (float)tot * 100F).ToString());
-                    sb.Append(@"px;"">");
-                    sb.Append(NameTools.GetLocalName(categories[i].FullName));
-                    sb.Append("</a>");
-                }
-                if (i != categories.Count - 1) sb.Append(" ");
-            }
-            return sb.ToString();
-        }
-
-        /// <summary>
-        /// Computes the sixe of a category label in the category cloud.
-        /// </summary>
-        /// <param name="percentage">The occurrence percentage of the category.</param>
-        /// <returns>The computes size.</returns>
-        private static int ComputeSize(float percentage)
-        {
-            // Interpolates min and max size on a line, so that if:
-            // - percentage = 0   -> size = minSize
-            // - percentage = 100 -> size = maxSize
-            // - intermediate values are calculated
-            float minSize = 8, maxSize = 26;
-            //return (int)((maxSize - minSize) / 100F * (float)percentage + minSize); // Linear interpolation
-            return (int)(maxSize - (maxSize - minSize) * Math.Exp(-percentage / 25)); // Exponential interpolation
-        }
-
-        /// <summary>
         /// Computes the positions of all NOWIKI tags.
         /// </summary>
         /// <param name="text">The input text.</param>
@@ -2778,65 +2415,70 @@ namespace FlipLeaf.Core.Text.ScrewturnWiki
                 sb.Remove(match.Index, match.Length);
                 switch (match.Value.Substring(1, match.Value.Length - 2).ToUpperInvariant())
                 {
-                    case "NAMESPACE":
-                        string ns = Tools.DetectCurrentNamespace();
-                        if (string.IsNullOrEmpty(ns)) ns = "&lt;root&gt;";
-                        sb.Insert(match.Index, ns);
-                        break;
-                    case "NAMESPACEDROPDOWN":
-                        sb.Insert(match.Index, BuildCurrentNamespaceDropDown());
-                        break;
-                    case "INCOMING":
-                        sb.Insert(match.Index, BuildIncomingLinksList(current, context, current));
-                        break;
-                    case "OUTGOING":
-                        sb.Insert(match.Index, BuildOutgoingLinksList(current, context, current));
-                        break;
-                    // Sueetie Modified - Displays sueetie username and links to profile page accordingly, though requires account upgrade to profile functions
-                    case "SUEETIEUSERNAME":
-                        System.Web.HttpContext currentContext = System.Web.HttpContext.Current;
-                        if (currentContext.User.Identity.IsAuthenticated) sb.Insert(match.Index, GetProfileLink(currentContext.User.Identity.Name));
-                        else sb.Insert(match.Index, GetLanguageLink(Exchanger.ResourceExchanger.GetResource("Guest")));
-                        break;
-                    case "USERNAME":
-                        if (SessionFacade.LoginKey != null) sb.Insert(match.Index, GetProfileLink(SessionFacade.CurrentUsername));
-                        else sb.Insert(match.Index, GetLanguageLink(Exchanger.ResourceExchanger.GetResource("Guest")));
-                        break;
-                    case "PAGENAME":
-                        if (current != null) sb.Insert(match.Index, current.FullName);
-                        break;
-                    case "LOGINLOGOUT":
-                        if (SessionFacade.LoginKey != null) sb.Insert(match.Index, GetLogoutLink());
-                        else sb.Insert(match.Index, GetLoginLink());
+                    //case "NAMESPACE":
+                    //    string ns = Tools.DetectCurrentNamespace();
+                    //    if (string.IsNullOrEmpty(ns)) ns = "&lt;root&gt;";
+                    //    sb.Insert(match.Index, ns);
+                    //    break;
+                    //case "NAMESPACEDROPDOWN":
+                    //    sb.Insert(match.Index, BuildCurrentNamespaceDropDown());
+                    //    break;
+                    //case "INCOMING":
+                    //    sb.Insert(match.Index, BuildIncomingLinksList(current, context, current));
+                    //    break;
+                    //case "OUTGOING":
+                    //    sb.Insert(match.Index, BuildOutgoingLinksList(current, context, current));
+                    //    break;
+                    //// Sueetie Modified - Displays sueetie username and links to profile page accordingly, though requires account upgrade to profile functions
+                    //case "SUEETIEUSERNAME":
+                    //    System.Web.HttpContext currentContext = System.Web.HttpContext.Current;
+                    //    if (currentContext.User.Identity.IsAuthenticated) sb.Insert(match.Index, GetProfileLink(currentContext.User.Identity.Name));
+                    //    else sb.Insert(match.Index, GetLanguageLink(Exchanger.ResourceExchanger.GetResource("Guest")));
+                    //    break;
+                    //case "USERNAME":
+                    //    if (SessionFacade.LoginKey != null) sb.Insert(match.Index, GetProfileLink(SessionFacade.CurrentUsername));
+                    //    else sb.Insert(match.Index, GetLanguageLink(Exchanger.ResourceExchanger.GetResource("Guest")));
+                    //    break;
+                    //case "PAGENAME":
+                    //    if (current != null) sb.Insert(match.Index, current.FullName);
+                    //    break;
+                    //case "LOGINLOGOUT":
+                    //    if (SessionFacade.LoginKey != null) sb.Insert(match.Index, GetLogoutLink());
+                    //    else sb.Insert(match.Index, GetLoginLink());
+                    //    break;
+                    default:
+                        sb.Insert(match.Index, "NOT SUPPORTED");
                         break;
                 }
                 match = Phase3SpecialTagRegex.Match(sb.ToString());
             }
 
-            sb.Replace(SectionLinkTextPlaceHolder, Exchanger.ResourceExchanger.GetResource("LinkToThisSection"));
+            //sb.Replace(SectionLinkTextPlaceHolder, Exchanger.ResourceExchanger.GetResource("LinkToThisSection"));
 
             if (current != null)
             {
-                match = RecentChangesRegex.Match(sb.ToString());
-                while (match.Success)
-                {
-                    sb.Remove(match.Index, match.Length);
-                    string trimmedTag = match.Value.Trim('{', '}');
-                    // If current page is null, assume root namespace
-                    NamespaceInfo currentNamespace = currentNamespace = Pages.FindNamespace(NameTools.GetNamespace(current.FullName));
-                    sb.Insert(match.Index, BuildRecentChanges(currentNamespace, trimmedTag.EndsWith("(*)"), context, current));
-                    match = RecentChangesRegex.Match(sb.ToString());
-                }
+                // {RecentChanges} disabled
+                //match = RecentChangesRegex.Match(sb.ToString());
+                //while (match.Success)
+                //{
+                //    sb.Remove(match.Index, match.Length);
+                //    string trimmedTag = match.Value.Trim('{', '}');
+                //    // If current page is null, assume root namespace
+                //    NamespaceInfo currentNamespace = currentNamespace = Pages.FindNamespace(NameTools.GetNamespace(current.FullName));
+                //    sb.Insert(match.Index, BuildRecentChanges(currentNamespace, trimmedTag.EndsWith("(*)"), context, current));
+                //    match = RecentChangesRegex.Match(sb.ToString());
+                //}
             }
 
             match = null;
 
-            dummy = new StringBuilder("<b>");
-            dummy.Append(Exchanger.ResourceExchanger.GetResource("TableOfContents"));
-            dummy.Append(@"</b><span id=""ExpandTocSpan""> [<a href=""#"" onclick=""javascript:if(document.getElementById('Toc').style['display']=='none') document.getElementById('Toc').style['display']=''; else document.getElementById('Toc').style['display']='none'; return false;"">");
-            dummy.Append(Exchanger.ResourceExchanger.GetResource("HideShow"));
-            dummy.Append("</a>]</span>");
-            sb.Replace(TocTitlePlaceHolder, dummy.ToString());
+            // disable TOC js
+            //dummy = new StringBuilder("<b>");
+            //dummy.Append(Exchanger.ResourceExchanger.GetResource("TableOfContents"));
+            //dummy.Append(@"</b><span id=""ExpandTocSpan""> [<a href=""#"" onclick=""javascript:if(document.getElementById('Toc').style['display']=='none') document.getElementById('Toc').style['display']=''; else document.getElementById('Toc').style['display']='none'; return false;"">");
+            //dummy.Append(Exchanger.ResourceExchanger.GetResource("HideShow"));
+            //dummy.Append("</a>]</span>");
+            //sb.Replace(TocTitlePlaceHolder, dummy.ToString());
 
             // Display edit links only when formatting page content (and not transcluded page content)
             if (current != null && context == FormattingContext.PageContent)
@@ -2963,122 +2605,6 @@ namespace FlipLeaf.Core.Text.ScrewturnWiki
 
             return sb.ToString();
         }
-
-        /// <summary>
-        /// Builds the current namespace drop-down list.
-        /// </summary>
-        /// <returns>The drop-down list HTML markup.</returns>
-        private static string BuildCurrentNamespaceDropDown()
-        {
-            string ns = Tools.DetectCurrentNamespace();
-            if (ns == null) ns = "";
-
-            string currentUser = SessionFacade.GetCurrentUsername();
-            string[] currentGroups = SessionFacade.GetCurrentGroupNames();
-
-            List<NamespaceInfo> allNamespaces = Pages.GetNamespaces();
-            List<string> allowedNamespaces = new List<string>(allNamespaces.Count);
-
-            if (AuthChecker.CheckActionForNamespace(null, Actions.ForNamespaces.ReadPages, currentUser, currentGroups))
-            {
-                allowedNamespaces.Add("");
-            }
-            foreach (NamespaceInfo nspace in allNamespaces)
-            {
-                if (AuthChecker.CheckActionForNamespace(nspace, Actions.ForNamespaces.ReadPages, currentUser, currentGroups))
-                {
-                    allowedNamespaces.Add(nspace.Name);
-                }
-            }
-
-            StringBuilder sb = new StringBuilder(500);
-            sb.Append("<select class=\"namespacedropdown\" onchange=\"javascript:var sel = this.value; document.location = (sel != '' ? (sel + '.') : '') + 'Default.aspx';\">");
-
-            foreach (string nspace in allowedNamespaces)
-            {
-                sb.AppendFormat("<option{0} value=\"{1}\">{2}</option>", nspace == ns ? " selected=\"selected\"" : "",
-                    nspace, nspace == "" ? "&lt;root&gt;" : nspace);
-            }
-
-            sb.Append("</select>");
-
-            return sb.ToString();
-        }
-
-        /// <summary>
-        /// Gets the link to the profile page.
-        /// </summary>
-        /// <param name="username">The username.</param>
-        /// <returns>The link.</returns>
-        private static string GetProfileLink(string username)
-        {
-            UserInfo user = Users.FindUser(username);
-
-            StringBuilder sb = new StringBuilder(200);
-            sb.Append("<a href=\"");
-            sb.Append(UrlTools.BuildUrl("Profile.aspx"));
-            sb.Append("\" class=\"systemlink\" title=\"");
-            sb.Append(Exchanger.ResourceExchanger.GetResource("GoToYourProfile"));
-            sb.Append("\">");
-            sb.Append(user != null ? Users.GetDisplayName(user) : username);
-            sb.Append("</a>");
-            return sb.ToString();
-        }
-
-        /// <summary>
-        /// Gets the link to the language page.
-        /// </summary>
-        /// <param name="username">The username.</param>
-        /// <returns>The link.</returns>
-        private static string GetLanguageLink(string username)
-        {
-            StringBuilder sb = new StringBuilder(200);
-            sb.Append("<a href=\"");
-            sb.Append(UrlTools.BuildUrl("Language.aspx"));
-            sb.Append("\" class=\"systemlink\" title=\"");
-            sb.Append(Exchanger.ResourceExchanger.GetResource("SelectYourLanguage"));
-            sb.Append("\">");
-            sb.Append(username);
-            sb.Append("</a>");
-            return sb.ToString();
-        }
-
-        /// <summary>
-        /// Gets the login link.
-        /// </summary>
-        /// <returns>The login link.</returns>
-        private static string GetLoginLink()
-        {
-            string login = Exchanger.ResourceExchanger.GetResource("Login");
-            StringBuilder sb = new StringBuilder(200);
-            sb.Append("<a href=\"");
-            sb.Append(UrlTools.BuildUrl("Login.aspx?Redirect=", Tools.UrlEncode(Tools.GetCurrentUrlFixed())));
-            sb.Append("\" class=\"systemlink\" title=\"");
-            sb.Append(login);
-            sb.Append("\">");
-            sb.Append(login);
-            sb.Append("</a>");
-            return sb.ToString();
-        }
-
-        /// <summary>
-        /// Gets the logout link.
-        /// </summary>
-        /// <returns>The logout link.</returns>
-        private static string GetLogoutLink()
-        {
-            string login = Exchanger.ResourceExchanger.GetResource("Logout");
-            StringBuilder sb = new StringBuilder(200);
-            sb.Append("<a href=\"");
-            sb.Append(UrlTools.BuildUrl("Login.aspx?ForceLogout=1&amp;Redirect=", Tools.UrlEncode(Tools.GetCurrentUrlFixed())));
-            sb.Append("\" class=\"systemlink\" title=\"");
-            sb.Append(login);
-            sb.Append("\">");
-            sb.Append(login);
-            sb.Append("</a>");
-            return sb.ToString();
-        }
-
     }
 
     /// <summary>
