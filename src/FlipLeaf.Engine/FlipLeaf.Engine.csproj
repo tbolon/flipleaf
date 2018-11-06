@@ -7,13 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Fluid.Core" Version="1.0.0-beta-9446" />
-    <PackageReference Include="Markdig" Version="0.15.1" />
-    <PackageReference Include="YamlDotNet" Version="5.0.1" />
+    <Compile Remove="Runtime\**" />
+    <EmbeddedResource Remove="Runtime\**" />
+    <None Remove="Runtime\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Runtime\" />
+    <PackageReference Include="Fluid.Core" Version="1.0.0-beta-9446" />
+    <PackageReference Include="Markdig" Version="0.15.1" />
+    <PackageReference Include="YamlDotNet" Version="5.0.1" />
   </ItemGroup>
 
 </Project>
