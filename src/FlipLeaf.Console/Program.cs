@@ -1,4 +1,5 @@
 ﻿
+using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 
 using Serilog;
@@ -7,15 +8,15 @@ namespace FlipLeaf
 {
     internal class Program
     {
-        private static int Main(string[] args)
+        private static Task<int> Main(string[] args)
         {
             // setup commandline app
-            var app = new CommandLineApplication(false);
+            var app = new CommandLineApplication();
             app.HelpOption("-? | -h | --help");
             var inputDir = app.Option("-i | --input", "Path to root site directory. By default current directory is used", CommandOptionType.SingleValue);
 
             // default action : generate static site
-            app.OnExecute(async () =>
+            app.OnExecuteAsync(async c =>
             {
                 // load config
                 var site = inputDir.HasValue() ? new WebSite(inputDir.Value()) : new WebSite();
@@ -56,10 +57,11 @@ namespace FlipLeaf
 
                 // generate
                 await site.GenerateAsync();
+                return 0;
             });
 
 
-            return app.Execute(args);
+            return app.ExecuteAsync(args);
         }
     }
 }

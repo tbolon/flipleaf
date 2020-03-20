@@ -256,7 +256,13 @@ namespace FlipLeaf.Core.Text.MarkdigSpecifics
         private InlineProcessor BuidProcessor()
         {
             var p = new WikiLinkParser();
-            var pr = new InlineProcessor(new StringBuilderCache(), new MarkdownDocument(), new InlineParserList(Enumerable.Empty<InlineParser>()), false);
+            var pr = new InlineProcessor(
+                new StringBuilderCache(), 
+                new MarkdownDocument(),
+                new InlineParserList(Enumerable.Empty<InlineParser>()),
+                false,
+                new Markdig.MarkdownParserContext()
+                );
             return pr;
         }
     }

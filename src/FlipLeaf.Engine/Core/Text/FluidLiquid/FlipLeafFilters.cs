@@ -7,7 +7,7 @@ namespace FlipLeaf.Core.Text.FluidLiquid
 {
     public static class FlipLeafFilters
     {
-        public static async Task<FluidValue> RelativeUrl(FluidValue input, FilterArguments arguments, TemplateContext context)
+        public static async ValueTask<FluidValue> RelativeUrl(FluidValue input, FilterArguments arguments, TemplateContext context)
         {
             var site = context.GetValue("site");
             var baseUrl = await site.GetValueAsync("baseUrl", context);

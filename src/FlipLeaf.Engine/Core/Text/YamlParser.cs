@@ -10,7 +10,7 @@ namespace FlipLeaf.Core.Text
 {
     public class YamlParser
     {
-        private readonly Deserializer _deserializer;
+        private readonly IDeserializer _deserializer;
 
         public YamlParser()
         {
@@ -25,9 +25,9 @@ namespace FlipLeaf.Core.Text
             pageContext = null;
 
             int i;
-            parser.Expect<StreamStart>();
+            parser.Consume<StreamStart>();
 
-            if (!parser.Accept<DocumentStart>())
+            if (!parser.Accept<DocumentStart>(out _))
             {
                 return false;
             }
@@ -46,7 +46,7 @@ namespace FlipLeaf.Core.Text
                 return false;
             }
 
-            if (!parser.Accept<DocumentStart>())
+            if (!parser.Accept<DocumentStart>(out _))
             {
                 return false;
             }

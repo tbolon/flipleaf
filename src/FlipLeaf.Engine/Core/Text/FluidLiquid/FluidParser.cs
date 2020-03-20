@@ -31,7 +31,14 @@ namespace FlipLeaf.Core.Text.FluidLiquid
         {
             TemplateContext context = null;
 
-            context = new TemplateContext { MemberAccessStrategy = new IgnoreCaseMemberAccessStrategy() };
+            context = new TemplateContext
+            {
+                MemberAccessStrategy = new MemberAccessStrategy
+                {
+                    IgnoreCasing = true,
+                    MemberNameStrategy = MemberNameStrategies.Default
+                }
+            };
             context.Filters.AddAsyncFilter("relative_url", FlipLeafFilters.RelativeUrl);
             context.FileProvider = new FlipLeafFileProvider(_ctx);
             context.MemberAccessStrategy.Register<WebSiteConfiguration>();
@@ -43,7 +50,8 @@ namespace FlipLeaf.Core.Text.FluidLiquid
             return context;
         }
 
-        public Task<string> ParseContextAsync(ViewTemplate template, TemplateContext templateContext) => template.RenderAsync(templateContext);
+        public ValueTask<string> ParseContextAsync(ViewTemplate template, TemplateContext templateContext)
+            => template.RenderAsync(templateContext);
 
         public async Task<string> ApplyLayoutAsync(string source, TemplateContext context)
         {

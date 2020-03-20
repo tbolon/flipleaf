@@ -16,27 +16,15 @@ namespace FlipLeaf
         }
         public static async System.Threading.Tasks.Task RundotNetScript(string[] args, IWebSite ctx)
         {
-            var logger = new ScriptLogger(ScriptConsole.Default.Out, true);
-
-            var dependencyResolver = new RuntimeDependencyResolver(type => ((level, message) =>
-            {
-                if (level == LogLevel.Debug)
-                {
-                    logger.Verbose(message);
-                }
-                if (level == LogLevel.Info)
-                {
-                    logger.Log(message);
-                }
-            }));
+            static Logger LogFactory(Type type) => (level, message, ex) => ScriptConsole.Default.Out.WriteLine(message);
 
             var code = Microsoft.CodeAnalysis.Text.SourceText.From(File.ReadAllText("FlipLeaf.csx"));
 
             var scriptContext = new ScriptContext(code, Environment.CurrentDirectory ?? Directory.GetCurrentDirectory(), args, scriptMode: Dotnet.Script.DependencyModel.Context.ScriptMode.REPL);
 
-            var compiler = new ScriptCompiler(logger, dependencyResolver);
+            var compiler = new ScriptCompiler(LogFactory, true);
 
-            var runner = new ScriptRunner(compiler, logger, ScriptConsole.Default);
+            var runner = new ScriptRunner(compiler, LogFactory, ScriptConsole.Default);
             await runner.Execute<int>(scriptContext);
         }
 

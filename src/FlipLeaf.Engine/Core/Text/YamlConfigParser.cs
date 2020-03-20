@@ -9,12 +9,12 @@ namespace FlipLeaf.Core.Text
 {
     public class YamlConfigParser
     {
-        private readonly Deserializer _deserializer;
+        private readonly IDeserializer _deserializer;
 
         public YamlConfigParser()
         {
             _deserializer = new DeserializerBuilder()
-                .WithNamingConvention(new CamelCaseNamingConvention())
+                .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 .Build();
         }
 
@@ -30,7 +30,7 @@ namespace FlipLeaf.Core.Text
         public WebSiteConfiguration ParseConfig(TextReader configReader)
         {
             var parser = new Parser(configReader);
-            parser.Expect<StreamStart>();
+            parser.Consume<StreamStart>();
 
             return _deserializer.Deserialize<WebSiteConfiguration>(parser) ?? WebSiteConfiguration.Default;
         }
