@@ -4,6 +4,6 @@ namespace FlipLeaf.Core
 {
     public interface IInputSource
     {
-        IEnumerable<IInput> Get(IStaticSite ctx);
+        IEnumerable<IInput> Get(IWebSite ctx);
     }
 }

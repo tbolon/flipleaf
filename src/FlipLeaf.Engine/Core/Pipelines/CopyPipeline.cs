@@ -5,11 +5,11 @@ namespace FlipLeaf.Core.Pipelines
 {
     public class CopyPipeline : IPipeline
     {
-        public bool Accept(IStaticSite ctx, IInput input) => true;
+        public bool Accept(IWebSite ctx, IInput input) => true;
 
-        public Task<InputItems> PrepareAsync(IStaticSite site, IInput input) => Task.FromResult(InputItems.Empty);
+        public Task<InputItems> PrepareAsync(IWebSite site, IInput input) => Task.FromResult(InputItems.Empty);
 
-        public async Task TransformAsync(IStaticSite ctx, IInput input)
+        public async Task TransformAsync(IWebSite ctx, IInput input)
         {
             var origin = input.GetFullInputPath(ctx);
             var destination = input.GetFullOuputPath(ctx);

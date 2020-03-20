@@ -18,7 +18,7 @@ namespace FlipLeaf.Core.Text
                 .Build();
         }
 
-        public SiteConfiguration ParseConfig(string path)
+        public WebSiteConfiguration ParseConfig(string path)
         {
             using (var file = File.OpenRead(path))
             using (var reader = new StreamReader(file))
@@ -27,12 +27,12 @@ namespace FlipLeaf.Core.Text
             }
         }
 
-        public SiteConfiguration ParseConfig(TextReader configReader)
+        public WebSiteConfiguration ParseConfig(TextReader configReader)
         {
             var parser = new Parser(configReader);
             parser.Expect<StreamStart>();
 
-            return _deserializer.Deserialize<SiteConfiguration>(parser) ?? SiteConfiguration.Default;
+            return _deserializer.Deserialize<WebSiteConfiguration>(parser) ?? WebSiteConfiguration.Default;
         }
     }
 }

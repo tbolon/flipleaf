@@ -9,7 +9,6 @@ namespace FlipLeaf.Core.Text.FluidLiquid
     {
         private Dictionary<string, IMemberAccessor> _map = new Dictionary<string, IMemberAccessor>(StringComparer.OrdinalIgnoreCase);
 
-
         public IMemberAccessor GetAccessor(object obj, string name)
         {
             // Look for specific property map

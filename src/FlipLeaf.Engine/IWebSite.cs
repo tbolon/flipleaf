@@ -5,9 +5,9 @@ using FlipLeaf.Core;
 
 namespace FlipLeaf
 {
-    public interface IStaticSite
+    public interface IWebSite
     {
-        SiteConfiguration Configuration { get; }
+        WebSiteConfiguration Configuration { get; }
 
         string RootDirectory { get; }
 
@@ -20,9 +20,9 @@ namespace FlipLeaf
         void AddPipeline(IInputSource source, IPipeline pipeline);
     }
 
-    public static class StaticSiteExtensions
+    public static class WebSiteExtensions
     {
-        public static string GetFullRootPath(this IStaticSite @this, string path)
+        public static string GetFullRootPath(this IWebSite @this, string path)
         {
             if (path == null)
             {
@@ -32,7 +32,7 @@ namespace FlipLeaf
             return Path.Combine(@this.RootDirectory, path);
         }
 
-        public static string GetFullInputPath(this IStaticSite @this, string path)
+        public static string GetFullInputPath(this IWebSite @this, string path)
         {
             if (path == null)
             {
@@ -42,7 +42,7 @@ namespace FlipLeaf
             return Path.Combine(@this.InputDirectory, path);
         }
 
-        public static string GetFullOutputPath(this IStaticSite @this, string path)
+        public static string GetFullOutputPath(this IWebSite @this, string path)
         {
             if (path == null)
             {

@@ -4,10 +4,10 @@ namespace FlipLeaf.Core
 {
     public interface IPipeline
     {
-        bool Accept(IStaticSite site, IInput input);
+        bool Accept(IWebSite site, IInput input);
 
-        Task<InputItems> PrepareAsync(IStaticSite site, IInput input);
+        Task<InputItems> PrepareAsync(IWebSite site, IInput input);
 
-        Task TransformAsync(IStaticSite site, IInput input);
+        Task TransformAsync(IWebSite site, IInput input);
     }
 }

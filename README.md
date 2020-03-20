@@ -55,7 +55,7 @@ Pipelines.Add("content", site =>
         new FlipLeaf.Core.Text.ReadContentMiddleware(),
         // prepare
         new FlipLeaf.Core.Text.ITextMiddleware[] {
-            new FlipLeaf.Core.Text.YamlHeaderMiddleware(new FlipLeaf.Core.Text.YamlParser())
+            new FlipLeaf.Core.Text.YamlHeaderPrepareMiddleware(new FlipLeaf.Core.Text.YamlParser())
         },
         // transform
         new FlipLeaf.Core.Text.ITextMiddleware[] {

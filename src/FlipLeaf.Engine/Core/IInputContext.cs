@@ -20,6 +20,6 @@
         /// <summary>
         /// Gets the global context of the site.
         /// </summary>
-        IStaticSite Site { get; }
+        IWebSite Site { get; }
     }
 }

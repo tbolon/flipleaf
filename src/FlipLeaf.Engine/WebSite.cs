@@ -8,26 +8,26 @@ using FlipLeaf.Core;
 
 namespace FlipLeaf
 {
-    public class StaticSite : IStaticSite
+    public class WebSite : IWebSite
     {
-        private static readonly Dictionary<IInputSource, List<IPipeline>> _pipelines = new Dictionary<IInputSource, List<IPipeline>>();
+        private static readonly Dictionary<IInputSource, List<IPipeline>> s_pipelines = new Dictionary<IInputSource, List<IPipeline>>();
 
-        private static readonly char[] _directorySeparators = new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
+        private static readonly char[] s_directorySeparators = new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
 
         private readonly ConcurrentBag<InputItems> _pageItems = new ConcurrentBag<InputItems>();
 
-        public StaticSite()
+        public WebSite()
         {
             RootDirectory = InputDirectory = Environment.CurrentDirectory;
         }
 
-        public StaticSite(string directory)
+        public WebSite(string directory)
         {
             RootDirectory = InputDirectory = Path.GetFullPath(directory);
-            OutputDirectory = Path.Combine(RootDirectory, SiteConfiguration.Default.OutputDir);
+            OutputDirectory = Path.Combine(RootDirectory, WebSiteConfiguration.Default.OutputDir);
         }
 
-        public SiteConfiguration Configuration { get; private set; }
+        public WebSiteConfiguration Configuration { get; private set; }
 
         /// <summary />
         public string RootDirectory { get; }
@@ -41,16 +41,15 @@ namespace FlipLeaf
         public void SetOutputDirectory(string path)
         {
             OutputDirectory = Path.Combine(InputDirectory, path);
-
             Runtime["outputDir"] = OutputDirectory;
         }
 
         public void AddPipeline(IInputSource source, IPipeline pipeline)
         {
-            if (!_pipelines.TryGetValue(source, out var sourcePipelines))
+            if (!s_pipelines.TryGetValue(source, out var sourcePipelines))
             {
                 sourcePipelines = new List<IPipeline>();
-                _pipelines[source] = sourcePipelines;
+                s_pipelines[source] = sourcePipelines;
             }
 
             sourcePipelines.Add(pipeline);
@@ -58,12 +57,12 @@ namespace FlipLeaf
 
         public void LoadConfiguration()
         {
-            var config = SiteConfiguration.LoadFromDisk(Path.Combine(InputDirectory, SiteConfiguration.DefaultFileName)) ?? SiteConfiguration.Default;
+            var config = WebSiteConfiguration.LoadFromDisk(Path.Combine(InputDirectory, WebSiteConfiguration.DefaultFileName)) ?? WebSiteConfiguration.Default;
 
             if (!string.IsNullOrEmpty(config.InputDir))
             {
                 InputDirectory = Path.Combine(InputDirectory, config.OutputDir);
-                OutputDirectory = Path.Combine(RootDirectory, SiteConfiguration.Default.OutputDir);
+                OutputDirectory = Path.Combine(RootDirectory, WebSiteConfiguration.Default.OutputDir);
             }
 
             if (!string.IsNullOrEmpty(config.OutputDir))
@@ -79,7 +78,7 @@ namespace FlipLeaf
         public async Task GenerateAsync()
         {
             var items = await Task
-                .WhenAll(_pipelines.Select(pk => PrepareInputSource(pk.Key, pk.Value)))
+                .WhenAll(s_pipelines.Select(pk => PrepareInputSource(pk.Key, pk.Value)))
                 .ConfigureAwait(false);
 
             // Generate categories
@@ -96,7 +95,7 @@ namespace FlipLeaf
             Runtime["categories"] = categories;
 
             await Task
-                .WhenAll(_pipelines.Select(pk => TransformInputSource(pk.Key, pk.Value)))
+                .WhenAll(s_pipelines.Select(pk => TransformInputSource(pk.Key, pk.Value)))
                 .ConfigureAwait(false);
         }
 
@@ -126,7 +125,7 @@ namespace FlipLeaf
             {
                 var dirName = Path.GetDirectoryName(path);
 
-                foreach (var subDir in dirName.Split(_directorySeparators, StringSplitOptions.RemoveEmptyEntries))
+                foreach (var subDir in dirName.Split(s_directorySeparators, StringSplitOptions.RemoveEmptyEntries))
                 {
                     if (!categories.TryGetValue(subDir, out var categoryPages))
                     {

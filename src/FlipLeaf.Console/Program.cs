@@ -18,7 +18,7 @@ namespace FlipLeaf
             app.OnExecute(async () =>
             {
                 // load config
-                var site = inputDir.HasValue() ? new StaticSite(inputDir.Value()) : new StaticSite();
+                var site = inputDir.HasValue() ? new WebSite(inputDir.Value()) : new WebSite();
                 site.LoadConfiguration();
 
                 // todo apply command-line args to runtime

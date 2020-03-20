@@ -17,7 +17,8 @@ namespace FlipLeaf.Core.Text.MarkdigSpecifics
         /// <summary>
         /// Adds the specified extension to the extensions collection.
         /// </summary>
-        public void Use<TExtension>() where TExtension : class, IMarkdownExtension, new()
+        public void Use<TExtension>()
+            where TExtension : class, IMarkdownExtension, new()
         {
             _pipelineBuilder.Extensions.AddIfNotAlready<TExtension>();
         }
@@ -25,7 +26,8 @@ namespace FlipLeaf.Core.Text.MarkdigSpecifics
         /// <summary>
         /// Adds the specified extension instance to the extensions collection.
         /// </summary>
-        public void Use<TExtension>(TExtension extension) where TExtension : class, IMarkdownExtension
+        public void Use<TExtension>(TExtension extension)
+            where TExtension : class, IMarkdownExtension
         {
             _pipelineBuilder.Extensions.AddIfNotAlready(extension);
         }
@@ -47,7 +49,7 @@ namespace FlipLeaf.Core.Text.MarkdigSpecifics
                 renderer.Render(doc);
 
                 writer.Flush();
-                
+
                 source = writer.ToString();
             }
 

@@ -30,13 +30,13 @@ namespace FlipLeaf.Core
         /// <summary>
         /// Opens the input to read the content.
         /// </summary>
-        Stream Open(IStaticSite ctx);
+        Stream Open(IWebSite ctx);
     }
 
     public static class InputExtensions
     {
-        public static string GetFullInputPath(this IInput @this, IStaticSite context) => context.GetFullInputPath(@this.Path ?? @this.RelativeName);
+        public static string GetFullInputPath(this IInput @this, IWebSite context) => context.GetFullInputPath(@this.Path ?? @this.RelativeName);
 
-        public static string GetFullOuputPath(this IInput @this, IStaticSite context) => context.GetFullOutputPath(@this.RelativeName);
+        public static string GetFullOuputPath(this IInput @this, IWebSite context) => context.GetFullOutputPath(@this.RelativeName);
     }
 }

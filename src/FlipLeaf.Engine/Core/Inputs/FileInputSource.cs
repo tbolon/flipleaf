@@ -32,7 +32,7 @@ namespace FlipLeaf.Core.Inputs
 
         public bool Recursive { get; set; } = true;
 
-        public IEnumerable<IInput> Get(IStaticSite context)
+        public IEnumerable<IInput> Get(IWebSite context)
         {
             var dir = new DirectoryInfo(Path.Combine(context.RootDirectory, _path));
             if (!dir.Exists)
@@ -43,7 +43,7 @@ namespace FlipLeaf.Core.Inputs
             return GetDirectoryFiles(context, dir, dir, true);
         }
 
-        private IEnumerable<IInput> GetDirectoryFiles(IStaticSite context, DirectoryInfo dir, DirectoryInfo rootDir, bool root)
+        private IEnumerable<IInput> GetDirectoryFiles(IWebSite context, DirectoryInfo dir, DirectoryInfo rootDir, bool root)
         {
             for (var i = 0; i < _patterns.Length; i++)
             {

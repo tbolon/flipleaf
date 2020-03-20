@@ -13,7 +13,11 @@ namespace FlipLeaf.Core.Pipelines
         private readonly ITextMiddleware[] _transformMiddlewares;
         private readonly ITextContentWriter _writer;
 
-        public TextTransformPipeline(Func<IInput, bool> filter, ITextMiddleware readMiddleware, ITextMiddleware[] prepareMiddlewares, ITextMiddleware[] transformMiddlewares, ITextContentWriter writer)
+        public TextTransformPipeline(Func<IInput, bool> filter,
+            ITextMiddleware readMiddleware,
+            ITextMiddleware[] prepareMiddlewares,
+            ITextMiddleware[] transformMiddlewares,
+            ITextContentWriter writer)
         {
             _filter = filter;
             _readMiddleware = readMiddleware;
@@ -22,13 +26,16 @@ namespace FlipLeaf.Core.Pipelines
             _writer = writer;
         }
 
-        public bool Accept(IStaticSite site, IInput input) => _filter(input);
+        public bool Accept(IWebSite site, IInput input)
+            => _filter(input);
 
-        public Task<InputItems> PrepareAsync(IStaticSite site, IInput input) => ExecuteAsync(site, input, _prepareMiddlewares, false);
+        public Task<InputItems> PrepareAsync(IWebSite site, IInput input)
+            => ExecuteAsync(site, input, _prepareMiddlewares, false);
 
-        public Task TransformAsync(IStaticSite site, IInput input) => ExecuteAsync(site, input, _transformMiddlewares, true);
+        public Task TransformAsync(IWebSite site, IInput input)
+            => ExecuteAsync(site, input, _transformMiddlewares, true);
 
-        private async Task<InputItems> ExecuteAsync(IStaticSite site, IInput input, ITextMiddleware[] middlewares, bool write)
+        private async Task<InputItems> ExecuteAsync(IWebSite site, IInput input, ITextMiddleware[] middlewares, bool write)
         {
             try
             {
@@ -53,7 +60,11 @@ namespace FlipLeaf.Core.Pipelines
             private readonly TextInputContext _ctx;
             private int _index;
 
-            public InputTransformer(ITextMiddleware readMiddleware, ITextMiddleware[] middlewares, ITextContentWriter writer, TextInputContext ctx)
+            public InputTransformer(
+                ITextMiddleware readMiddleware,
+                ITextMiddleware[] middlewares,
+                ITextContentWriter writer,
+                TextInputContext ctx)
             {
                 _readMiddleware = readMiddleware;
                 _middlewares = middlewares;

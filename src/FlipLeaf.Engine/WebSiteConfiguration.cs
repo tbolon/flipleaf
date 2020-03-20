@@ -3,13 +3,13 @@ using System.IO;
 
 namespace FlipLeaf
 {
-    public class SiteConfiguration
+    public class WebSiteConfiguration
     {
         public const string DefaultFileName = "_config.yml";
         private const string DefaultLayoutsDir = "_layouts";
         private const string DefaultOutputDir = "_site";
 
-        public static readonly SiteConfiguration Default = new SiteConfiguration();
+        public static readonly WebSiteConfiguration Default = new WebSiteConfiguration();
 
         public string Title { get; set; }
 
@@ -21,7 +21,7 @@ namespace FlipLeaf
 
         public string BaseUrl { get; set; } = string.Empty;
 
-        public static SiteConfiguration LoadFromDisk(string path)
+        public static WebSiteConfiguration LoadFromDisk(string path)
         {
             if (File.Exists(path))
             {

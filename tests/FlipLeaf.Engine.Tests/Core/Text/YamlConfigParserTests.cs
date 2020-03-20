@@ -16,10 +16,10 @@ namespace FlipLeaf.Core.Text
             var config = new YamlConfigParser().ParseConfig(reader);
 
             // assert
-            Assert.Equal(SiteConfiguration.Default.BaseUrl, config.BaseUrl);
-            Assert.Equal(SiteConfiguration.Default.LayoutDir, config.LayoutDir);
-            Assert.Equal(SiteConfiguration.Default.OutputDir, config.OutputDir);
-            Assert.Equal(SiteConfiguration.Default.Title, config.Title);
+            Assert.Equal(WebSiteConfiguration.Default.BaseUrl, config.BaseUrl);
+            Assert.Equal(WebSiteConfiguration.Default.LayoutDir, config.LayoutDir);
+            Assert.Equal(WebSiteConfiguration.Default.OutputDir, config.OutputDir);
+            Assert.Equal(WebSiteConfiguration.Default.Title, config.Title);
         }
 
         [Fact]
@@ -32,10 +32,10 @@ namespace FlipLeaf.Core.Text
             var config = new YamlConfigParser().ParseConfig(reader);
 
             // assert
-            Assert.Equal(SiteConfiguration.Default.BaseUrl, config.BaseUrl);
-            Assert.Equal(SiteConfiguration.Default.LayoutDir, config.LayoutDir);
-            Assert.Equal(SiteConfiguration.Default.OutputDir, config.OutputDir);
-            Assert.Equal(SiteConfiguration.Default.Title, config.Title);
+            Assert.Equal(WebSiteConfiguration.Default.BaseUrl, config.BaseUrl);
+            Assert.Equal(WebSiteConfiguration.Default.LayoutDir, config.LayoutDir);
+            Assert.Equal(WebSiteConfiguration.Default.OutputDir, config.OutputDir);
+            Assert.Equal(WebSiteConfiguration.Default.Title, config.Title);
         }
 
         [Fact]

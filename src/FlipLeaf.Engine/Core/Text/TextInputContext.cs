@@ -5,7 +5,7 @@ namespace FlipLeaf.Core.Text
 {
     public class TextInputContext : IInputContext
     {
-        public TextInputContext(IStaticSite context, IInput input)
+        public TextInputContext(IWebSite context, IInput input)
         {
             Input = input;
             InputPath = input.GetFullInputPath(context);
@@ -17,7 +17,7 @@ namespace FlipLeaf.Core.Text
             Items["fullPath"] = input.Path;
         }
 
-        public IStaticSite Site { get; }
+        public IWebSite Site { get; }
 
         public IInput Input { get; }
 

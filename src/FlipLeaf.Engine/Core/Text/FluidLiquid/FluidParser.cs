@@ -11,9 +11,9 @@ namespace FlipLeaf.Core.Text.FluidLiquid
         internal const string BodyAmbientValueKey = "body";
 
         private readonly ConcurrentDictionary<string, Task<ViewTemplate>> _layoutCache = new ConcurrentDictionary<string, Task<ViewTemplate>>();
-        private readonly IStaticSite _ctx;
+        private readonly IWebSite _ctx;
 
-        public FluidParser(IStaticSite ctx)
+        public FluidParser(IWebSite ctx)
         {
             _ctx = ctx;
         }
@@ -35,8 +35,8 @@ namespace FlipLeaf.Core.Text.FluidLiquid
             context = new TemplateContext { MemberAccessStrategy = new IgnoreCaseMemberAccessStrategy() };
             context.Filters.AddAsyncFilter("relative_url", FlipLeafFilters.RelativeUrl);
             context.FileProvider = new FlipLeafFileProvider(_ctx);
-            context.MemberAccessStrategy.Register<SiteConfiguration>();
-            context.MemberAccessStrategy.Register<StaticSite>();
+            context.MemberAccessStrategy.Register<WebSiteConfiguration>();
+            context.MemberAccessStrategy.Register<WebSite>();
             context.SetValue("page", pageContext);
             context.SetValue("site", _ctx.Runtime);
 

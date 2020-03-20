@@ -1,5 +1,4 @@
-﻿using System;
-using Markdig;
+﻿using Markdig;
 using Markdig.Renderers;
 using Markdig.Renderers.Html.Inlines;
 using Markdig.Syntax.Inlines;
@@ -8,9 +7,9 @@ namespace FlipLeaf.Core.Text.MarkdigSpecifics
 {
     public class CustomLinkInlineRendererExtension : IMarkdownExtension
     {
-        private readonly IStaticSite _site;
+        private readonly IWebSite _site;
 
-        public CustomLinkInlineRendererExtension(IStaticSite site)
+        public CustomLinkInlineRendererExtension(IWebSite site)
         {
             _site = site;
         }

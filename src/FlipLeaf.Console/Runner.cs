@@ -1,23 +1,20 @@
 ﻿using System;
-using System.ComponentModel;
 using System.IO;
 using Dotnet.Script.Core;
 using Dotnet.Script.DependencyModel.Logging;
 using Dotnet.Script.DependencyModel.Runtime;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
-using Microsoft.CodeAnalysis.CSharp.Scripting.Hosting;
 using Microsoft.CodeAnalysis.Scripting;
-using Microsoft.CodeAnalysis.Scripting.Hosting;
 
 namespace FlipLeaf
 {
     internal class Runner
     {
-        public static System.Threading.Tasks.Task RunAsync(string[] args, IStaticSite ctx)
+        public static System.Threading.Tasks.Task RunAsync(string[] args, IWebSite ctx)
         {
             return RundotNetScript(args, ctx);
         }
-        public static async System.Threading.Tasks.Task RundotNetScript(string[] args, IStaticSite ctx)
+        public static async System.Threading.Tasks.Task RundotNetScript(string[] args, IWebSite ctx)
         {
             var logger = new ScriptLogger(ScriptConsole.Default.Out, true);
 
@@ -43,12 +40,12 @@ namespace FlipLeaf
             await runner.Execute<int>(scriptContext);
         }
 
-        public static async System.Threading.Tasks.Task RunRoslynAsync(string[] args, IStaticSite site)
+        public static async System.Threading.Tasks.Task RunRoslynAsync(string[] args, IWebSite site)
         {
             //var globals = new Scripting.Globals { Site = site};
             var txt = File.ReadAllText("FlipLeaf.csx");
             var options = ScriptOptions.Default
-                .WithReferences(typeof(IStaticSite).Assembly)
+                .WithReferences(typeof(IWebSite).Assembly)
                 ;
 
             await CSharpScript.RunAsync(txt, options, null);

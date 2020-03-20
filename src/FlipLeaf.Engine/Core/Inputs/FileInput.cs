@@ -17,7 +17,7 @@ namespace FlipLeaf.Core.Inputs
 
         public string Path { get; }
 
-        public Stream Open(IStaticSite ctx)
+        public Stream Open(IWebSite ctx)
         {
             return File.OpenRead(Path ?? System.IO.Path.Combine(ctx.InputDirectory, RelativeName));
         }

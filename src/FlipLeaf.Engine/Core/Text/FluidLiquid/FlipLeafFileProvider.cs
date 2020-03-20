@@ -7,9 +7,9 @@ namespace FlipLeaf.Core.Text.FluidLiquid
 {
     public class FlipLeafFileProvider : IFileProvider
     {
-        private readonly IStaticSite _site;
+        private readonly IWebSite _site;
 
-        public FlipLeafFileProvider(IStaticSite site)
+        public FlipLeafFileProvider(IWebSite site)
         {
             _site = site;
         }
