@@ -1,7 +1,0 @@
-.vs/
-.vscode/
-bin/
-obj/
-_site/
-*.csproj.user
-launchSettings.json
